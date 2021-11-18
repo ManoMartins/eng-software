@@ -28,7 +28,7 @@ public class TelefoneDao extends AbstractDao {
         sql.append("insert into telefones (ddd, numero, tipo) values (?, ?, ?)");
 
         try {
-            //connection.setAutoCommit(false);
+            connection.setAutoCommit(false);
 
             pst = connection.prepareStatement(sql.toString(), Statement.RETURN_GENERATED_KEYS);
             pst.setString(1, telefone.getDdd());
@@ -46,6 +46,7 @@ public class TelefoneDao extends AbstractDao {
             }
 
             telefone.setId(id);
+            connection.commit();
         } catch (Exception e) {
             try {
                 connection.rollback();
