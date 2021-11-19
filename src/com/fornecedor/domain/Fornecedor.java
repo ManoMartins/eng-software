@@ -1,5 +1,7 @@
 package com.fornecedor.domain;
 
+import java.util.ArrayList;
+
 public class Fornecedor extends EntidadeDominio {
     private Telefone telefone;
     private Contato contato;
@@ -11,8 +13,17 @@ public class Fornecedor extends EntidadeDominio {
     private String nomeFantasia;
     private TipoFornecedor tipoFornecedor;
     private Status status;
+    private ArrayList<Produto> produtos;
 
     public Fornecedor() {
+    }
+
+    public ArrayList<Produto> getProdutos() {
+        return produtos;
+    }
+
+    public void setProdutos(ArrayList<Produto> produtos) {
+        this.produtos = produtos;
     }
 
     public TipoFornecedor getTipoFornecedor() {

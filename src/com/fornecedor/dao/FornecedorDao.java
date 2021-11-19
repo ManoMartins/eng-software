@@ -3,6 +3,7 @@ package com.fornecedor.dao;
 import com.fornecedor.domain.Contato;
 import com.fornecedor.domain.EntidadeDominio;
 import com.fornecedor.domain.Fornecedor;
+import com.fornecedor.domain.Produto;
 
 import java.sql.*;
 import java.util.List;
@@ -27,13 +28,7 @@ public class FornecedorDao extends AbstractDao {
         Fornecedor fornecedor = (Fornecedor) entidade;
         StringBuilder sql = new StringBuilder();
 
-        TelefoneDao telefoneDao = new TelefoneDao(connection);
-        telefoneDao.ctrlTransaction = false;
-        telefoneDao.salvar(fornecedor.getTelefone());
 
-        ContatoDao contatoDao = new ContatoDao(connection);
-        contatoDao.ctrlTransaction = false;
-        contatoDao.salvar(fornecedor.getContato());
 
         sql.append("insert into fornecedores ( ");
         sql.append("tel_id, ");
@@ -50,6 +45,14 @@ public class FornecedorDao extends AbstractDao {
         sql.append("values (?, ?, ?, ?, ?, ?, ?, ?, ?::fornecedor_type_enum, ?::status_type_enum)");
 
         try {
+            TelefoneDao telefoneDao = new TelefoneDao(connection);
+            telefoneDao.ctrlTransaction = false;
+            telefoneDao.salvar(fornecedor.getTelefone());
+
+            ContatoDao contatoDao = new ContatoDao(connection);
+            contatoDao.ctrlTransaction = false;
+            contatoDao.salvar(fornecedor.getContato());
+
             connection.setAutoCommit(false);
 
             pst = connection.prepareStatement(sql.toString(), Statement.RETURN_GENERATED_KEYS);
@@ -75,6 +78,13 @@ public class FornecedorDao extends AbstractDao {
             }
 
             fornecedor.setId(id);
+
+            for (Produto produto : fornecedor.getProdutos()) {
+                ProdutoDao produtoDao = new ProdutoDao(connection);
+                produtoDao.ctrlTransaction = false;
+                produtoDao.salvar(produto);
+            }
+
             connection.commit();
         } catch (Exception e) {
             try {
