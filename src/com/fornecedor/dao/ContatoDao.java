@@ -8,7 +8,6 @@ import java.util.List;
 
 public class ContatoDao extends AbstractDao{
 
-
     public ContatoDao(Connection cx) {
         super(cx, "contatos", "id");
     }
