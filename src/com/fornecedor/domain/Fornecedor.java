@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Fornecedor extends EntidadeDominio {
     private Telefone telefone;
     private Contato contato;
+    private Endereco endereco;
     private String email;
     private String cnpj;
     private String incricaoEstadual;
@@ -16,6 +17,14 @@ public class Fornecedor extends EntidadeDominio {
     private ArrayList<Produto> produtos;
 
     public Fornecedor() {
+    }
+
+    public Endereco getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(Endereco endereco) {
+        this.endereco = endereco;
     }
 
     public ArrayList<Produto> getProdutos() {

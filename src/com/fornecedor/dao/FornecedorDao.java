@@ -33,6 +33,7 @@ public class FornecedorDao extends AbstractDao {
         sql.append("insert into fornecedores ( ");
         sql.append("tel_id, ");
         sql.append("con_id, ");
+        sql.append("end_id, ");
         sql.append("email, ");
         sql.append("cnpj, ");
         sql.append("inscricao_municipal, ");
@@ -42,7 +43,7 @@ public class FornecedorDao extends AbstractDao {
         sql.append("tipo_fornecedor, ");
         sql.append("status");
         sql.append(") ");
-        sql.append("values (?, ?, ?, ?, ?, ?, ?, ?, ?::fornecedor_type_enum, ?::status_type_enum)");
+        sql.append("values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?::fornecedor_type_enum, ?::status_type_enum)");
 
         try {
             TelefoneDao telefoneDao = new TelefoneDao(connection);
@@ -53,19 +54,24 @@ public class FornecedorDao extends AbstractDao {
             contatoDao.ctrlTransaction = false;
             contatoDao.salvar(fornecedor.getContato());
 
+            EnderecoDao enderecoDao = new EnderecoDao(connection);
+            enderecoDao.ctrlTransaction = false;
+            enderecoDao.salvar(fornecedor.getEndereco());
+
             connection.setAutoCommit(false);
 
             pst = connection.prepareStatement(sql.toString(), Statement.RETURN_GENERATED_KEYS);
             pst.setInt(1, fornecedor.getTelefone().getId());
             pst.setInt(2, fornecedor.getContato().getId());
-            pst.setString(3, fornecedor.getEmail());
-            pst.setString(4, fornecedor.getCnpj());
-            pst.setString(5, fornecedor.getIncricaoMunicipal());
-            pst.setString(6, fornecedor.getIncricaoEstadual());
-            pst.setString(7, fornecedor.getRazaoSocial());
-            pst.setString(8, fornecedor.getNomeFantasia());
-            pst.setString(9, fornecedor.getTipoFornecedor().name());
-            pst.setString(10, fornecedor.getStatus().name());
+            pst.setInt(3, fornecedor.getEndereco().getId());
+            pst.setString(4, fornecedor.getEmail());
+            pst.setString(5, fornecedor.getCnpj());
+            pst.setString(6, fornecedor.getIncricaoMunicipal());
+            pst.setString(7, fornecedor.getIncricaoEstadual());
+            pst.setString(8, fornecedor.getRazaoSocial());
+            pst.setString(9, fornecedor.getNomeFantasia());
+            pst.setString(10, fornecedor.getTipoFornecedor().name());
+            pst.setString(11, fornecedor.getStatus().name());
 
             pst.executeUpdate();
 
@@ -80,6 +86,7 @@ public class FornecedorDao extends AbstractDao {
             fornecedor.setId(id);
 
             for (Produto produto : fornecedor.getProdutos()) {
+                produto.setFornecedor(fornecedor);
                 ProdutoDao produtoDao = new ProdutoDao(connection);
                 produtoDao.ctrlTransaction = false;
                 produtoDao.salvar(produto);
